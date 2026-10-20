@@ -1,0 +1,4 @@
+title: Free Time Zone Convert for Google Sheets
+description: Convert date-times between time zones in Google Sheets with daylight saving handled. Free TZ_CONVERT custom formula.
+plugins:
+  - jekyll-sitemap
