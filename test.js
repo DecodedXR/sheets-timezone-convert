@@ -33,4 +33,8 @@ ctx.SpreadsheetApp = { getActiveSpreadsheet: () => ({ getSpreadsheetTimeZone: ()
 const out = ctx.TZ_CONVERT([[cell('2026-07-01T12:00', 'UTC')], ['']], 'UTC', 'Asia/Tokyo');
 assert.equal(shows(out[0][0], 'UTC'), '2026-07-01T21:00'); assert.equal(out[1][0], '');
 assert.throws(() => ctx.TZ_CONVERT('hello', 'UTC', 'Asia/Tokyo'), /Not a date-time/);
+// A runtime without Intl time zones must not reject every zone.
+const bare = { Utilities, Intl: { DateTimeFormat: function () { throw new RangeError('no tz'); } } };
+vm.runInNewContext(fs.readFileSync(__dirname + '/Code.gs', 'utf8'), bare);
+assert.equal(bare.zone_('America/Nowhere', 'X'), 'America/Nowhere');
 console.log('ok');

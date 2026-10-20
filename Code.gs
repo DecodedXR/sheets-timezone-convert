@@ -61,6 +61,12 @@ function zone_(name, sheetZone) {
   if (z.toUpperCase() === 'UTC' || z.toUpperCase() === 'GMT') return 'UTC';
   if (!z.includes('/')) throw new Error('Use a time zone name like "America/New_York", not "' + z + '".');
   // An unknown name would silently fall back to GMT in formatDate, so check it first.
-  try { new Intl.DateTimeFormat('en-US', { timeZone: z }); } catch (e) { throw new Error('Unknown time zone: "' + z + '".'); }
+  if (!knownZone_(z)) throw new Error('Unknown time zone: "' + z + '".');
   return z;
+}
+
+/** True unless Intl rejects the name while accepting a known-good one (so a runtime without Intl zones never blocks). */
+function knownZone_(z) {
+  const ok = name => { try { new Intl.DateTimeFormat('en-US', { timeZone: name }); return true; } catch (e) { return false; } };
+  return ok(z) || !ok('America/New_York');
 }
